@@ -16,9 +16,15 @@ def search(field, searched):
 
 def get_next(scrape):
     nav_pane = scrape.find_element(By.XPATH, "//div/section/div/div/div/div/div[@class='result_pager']")
-    next = nav_pane.find_element(By.XPATH, "//div/nav/div/div/div[@class='next']")
-    scrape.execute_script('window.scrollTo(0,' + str(next.location['y']) + ')')
-    return next
+    next_ = nav_pane.find_element(By.XPATH, "//div/nav/div/div/div[@class='next']")
+    scrape.execute_script('window.scrollTo(0,' + str(next_.location['y']) + ')')
+    return next_
+
+def get_current_page(scrape):
+    nav_pane = scrape.find_element(By.XPATH, "//div/section/div/div/div/div/div[@class='result_pager']")
+    active = nav_pane.find_element(By.XPATH, "//div/nav/div/div/div/a[@class=' active']")
+    scrape.execute_script('window.scrollTo(0,' + str(active.location['y']) + ')')
+    return active
 
 
 close_cookies(scrape=BA_scrape)
@@ -29,14 +35,10 @@ search(field=search_field, searched='Bundesministergesetz')
 time.sleep(1)
 
 soup = BeautifulSoup(BA_scrape.driver.page_source, features="html.parser")
-a = 1
+change = True
 
-while a!=0:
+while change:
 
-    try:
-        next_ = get_next(scrape=BA_scrape.driver)
-    except:
-        a = 0
     page_results = BA_scrape.driver.find_elements(
         By.LINK_TEXT,
         'Bekanntmachung einer Entscheidung der Bundesregierung nach § 6b des Bundesministergesetzes')
@@ -53,10 +55,15 @@ while a!=0:
         elementHTML = result_elem.get_attribute('outerHTML')  # gives exact HTML content of the element
         elementSoup = BeautifulSoup(elementHTML, 'html.parser')
         result_text = elementSoup.get_text()
-        print(result_text)
+        print(result_num)
         back = BA_scrape.driver.find_element(By.LINK_TEXT, "Zurück zum Suchergebnis")
         back.click()
+    current_page = int(get_current_page(scrape=BA_scrape.driver).text)
+    next_ = get_next(scrape=BA_scrape.driver)
     next_.click()
+    if int(get_current_page(scrape=BA_scrape.driver).text) == current_page:
+        change = False
+
 
 
 
