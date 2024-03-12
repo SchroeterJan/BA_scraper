@@ -3,10 +3,13 @@ import re
 import unicodedata
 
 
-def re_search(text, search):
-    m = re.search(search, text)
+def re_search(pattern, text, group_=1):
+    # patterns is inserted as raw string into the function
+    pattern = unicodedata.normalize("NFC", pattern)
+    pattern = re.compile(pattern)
+    m = re.search(pattern, text)
     if m:
-        found = m.group(1)
+        found = m.group(group_)
     else:
         # print(search + ' --- was not found')
         found = None
@@ -14,116 +17,160 @@ def re_search(text, search):
 
 
 def get_anrede(text):
-    m = re.search('Herr', text)
-    if m:
-        anrede = 'Herr'
+    found = re_search(pattern=r'Herr', text=text, group_=0)
+    if found:
+        anrede = found
     else:
-        m = re.search('Frau', text)
-        if m:
-            anrede = 'Frau'
+        found = re_search(pattern=r'Frau', text=text, group_=0)
+        if found:
+            anrede = found
         else:
-            'KEINE ANREDE GEFUNDEN'
+            print('KEINE ANREDE GEFUNDEN')
             anrede = ''
     return anrede
 
 
 def get_ad(text):
-    found = re.search(r'a\. D\.', text)
+    found = re_search(pattern=r'a\. D\.', text=text, group_=0)
     if found:
-        return 'a. D.'
+        return found
     else:
-        found = re.search(r'a\.D\.', text)
-        return 'a.D.'
-
+        found = re_search(pattern=r'a\.D\.', text=text, group_=0)
+        if found:
+            return found
+        else:
+            print('No außer Dienst found')
+            return ''
 
 
 def get_funktion(text, anrede, ad):
-    return re_search(search=anrede + ' (.+?) ' + ad, text=text)
-
+    found = re_search(pattern=anrede + r' (.+?) ' + ad, text=text)
+    if found:
+        return found
+    else:
+        print('No Funktion found')
 
 
 def get_name(text, ad):
-    return re_search(search=ad +' (.+?) hat', text=text)
+    found = re_search(pattern=ad + r' (.+?) hat', text=text)
+    if found:
+        return found
+    else:
+        print('No Name found')
 
 
 def get_taetigkeit(text, multi_no):
     # Über den Plural von "Tätigkeit" wird die Aufnahme mehrerer Tätigkeiten detektiert
-    if re.search(unicodedata.normalize("NFC", 'nachamtliche Tätigkeiten aufnehmen'), text):      # Falls Plural
+    if re_search(pattern=r'nachamtliche Tätigkeiten aufnehmen', text=text, group_=0):      # Falls Plural
         if multi_no == str(1):       # Bei der Ersten der mehreren Tätigkeiten wird die Gesamtanzahl ermittelt
             # Beschreibung der Tätigkeiten separieren
-            taet_str = re_search(search='aufnehmen zu wollen:   (.+?)     Die Bundesregierung', text=text)
+            taet_str = re_search(pattern=r'aufnehmen zu wollen:   (.+?)     Die Bundesregierung', text=text)
             # detektiere nur Zahlen und wandle die höchste zu Typ int
-            multi = max(map(int, [e for e in re.split("[^0-9]", taet_str) if e != '' and len(e) == 1]))
+            multi = max(map(int, re.findall(re.compile(r'([0-9])\.'), taet_str)))
+            # multi = max(map(int, [e for e in re.split("[^0-9]", taet_str) if e != '' and len(e) == 1]))
             # ermittle erste Tätigkeit
-            found = re_search(search=multi_no + r'\.  (.+?)  ' + str(int(multi_no) + 1), text=text)
+            found = re_search(pattern=multi_no + r'\.  (.+?)  ' + str(int(multi_no) + 1), text=text)
             return found, multi
         else:
-            found = re_search(search=multi_no + r'\.  (.+?)  ', text=text)
+            found = re_search(pattern=multi_no + r'\.  (.+?)  ', text=text)
             return found, multi_no
     else:
         multi = 1
-        found = re_search(search=unicodedata.normalize("NFC", 'nachamtliche Tätigkeit (.+?) aufnehmen'),
-                          text=text)
+        found = re_search(pattern=r'nachamtliche Tätigkeit (.+?) aufnehmen', text=text)
         if found:
             return found, multi
         else:
-            found = re_search(
-                search=unicodedata.normalize("NFC", 'nachamtliche Tätigkeit (.+?) angezeigt'),
-                text=text)
+            found = re_search(pattern=r'nachamtliche Tätigkeit (.+?) angezeigt', text=text)
             if found:
                 return found, multi
             else:
-                found = re_search(
-                    search=unicodedata.normalize("NFC", 'die Tätigkeit als (.+?) aufnehmen zu wollen'),
-                    text=text)
+                found = re_search(pattern=r'die Tätigkeit als (.+?) aufnehmen zu wollen', text=text)
                 if found:
                     return found, multi
                 else:
-                    found = re_search(search='angezeigt, (.+?).   Die Bundesregierung', text=text)
+                    found = re_search(pattern=r'angezeigt, (.+?).   Die Bundesregierung', text=text)
                     if found:
                         return found, multi
                     else:
-                        print('NO TÄTIGKEIT FOUND')
-                        return None, multi
-
+                        found = re_search(pattern=r'angezeigt, (.+?). Die Bundesregierung', text=text)
+                        if found:
+                            return found, multi
+                        else:
+                            print('NO TÄTIGKEIT FOUND')
+                            return None, multi
 
 
 def get_date_sitzung(text):
-    found = re_search(search='in ihrer Sitzung am (.+?) der Empfehlung', text=text)
+    found = re_search(pattern=r'in ihrer Sitzung am (.+?) der Empfehlung', text=text)
     if found:
+        empfehlung = True
         try:
             found = datetime.datetime.strptime(found, '%d. %B %Y')
         except:
             found = datetime.datetime.strptime(found, '%d. %B %Y ')
-    return found
+    else:
+        found = re_search(pattern=r'in ihrer Sitzung am (.+?) beschlossen', text=text)
+        if found:
+            empfehlung = False
+        else:
+            found = re_search(r'Die Bundesregierung hat am (.+?) der Empfehlung', text=text)
+            if found:
+                empfehlung = True
+            else:
+                print('No date of Sitzung found')
+    return found, empfehlung
 
 
 def get_date_bekannt(text, anrede):
-    found = re_search(search='Bundesministergesetzes Vom (.+?)  ' + anrede, text=text)
+    found = re_search(pattern=r'Bundesministergesetzes Vom (.+?)  ' + anrede, text=text)
     if found:
         try:
             found = datetime.datetime.strptime(found, '%d. %B %Y')
         except:
             found = datetime.datetime.strptime(found, '%d. %B %Y ')
+    else:
+        print('No date of Bekanntmachung found')
     return found
 
 
-def get_folgend(text):
-    found = re_search(search='Gremiums (.+?) beschlossen', text=text)
-    if found:
-        return True
+def get_folgend(text, empfehlung):
+    if empfehlung:
+        found = re_search(pattern=r'Gremiums (.+?) beschlossen', text=text)
+        if found == 'folgend':
+            return True
+        else:
+            found = re_search(pattern=r'Gremiums (.+?) angeschlossen', text=text)
+            if found:
+                return True
+            else:
+                return False
     else:
-        return False
+        found = re_search(pattern=r'Gremiums (.+?)\.', text=text)
+        if found == 'angeschlossen':
+            return True
+        else:
+            found = re_search(pattern=r'schließt sich damit den Empfehlungen des beratenden Gremiums (.+?)\.',
+                              text=text)
+            if found == 'an':
+                return True
+            else:
+                return False
 
 
-def get_beschluss(text, multi):
+def get_beschluss(text, multi, empfehlung):
     if multi == 1:
-        found = re_search(search=unicodedata.normalize("NFC", 'beschlossen, (.+?) dieser Tätigkeit'),
-                          text=text)
+        found = re_search(pattern=r'beschlossen, (.+?) dieser Tätigkeit', text=text)
         if found:
             return found
         else:
-            found = re_search(search='beschlossen, (.+?).  Berlin', text=text)
-            return found
+            found = re_search(pattern=r'beschlossen, (.+?).  Berlin', text=text)
+            if found:
+                return found
+            else:
+                print('No Beschluss gefunden')
     else:
-        return re_search(search='beschlossen, (.+?)  Berlin', text=text)
+        found = re_search(pattern=r'beschlossen, (.+?)  Berlin', text=text)
+        if found:
+            return found
+        else:
+            print('No Beschluss gefunden')

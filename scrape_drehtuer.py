@@ -6,13 +6,14 @@ import pandas as pd
 import time
 import locale
 
-
+# define locale time format
 locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
-
+# create scraper object
 BA_scrape = BAScraper(confirm=confirm, url=BA_url + search_url)
 
 
 def close_cookies(scrape):
+    # closes cookie question answering "no"
     scrape.find_element(By.CLASS_NAME, "cc_commands").click()
 
 
@@ -44,14 +45,22 @@ def get_results(scraper):
 def open_result(scraper):
     page_results = get_results(scraper=scraper)
     result = page_results[result_num]
+    # scrolling down to current result location
     scraper.execute_script('window.scrollTo(0,' + str(result.location['y']) + ')')
     result.click()
 
 
 def prep_text(text):
+    # normalize text to unicode using the most common normal form NFC which is adviced for html
+
+    # replace new line "\n" and carriage return "\r"
+    # source for exploring unicode https://unicode-explorer.com
     text = text.replace('\n', ' ').replace('\r', '')
     text = text.replace('\xad', '')
     text = text.replace('\u00ad', '')
+    text = text.replace('\u00a0', ' ')  # replacing "no-break space" &nbsp
+    text = text.replace('\u2004', ' ')
+    text = text.replace('\u2006', ' ')
     text = text.replace('\N{SOFT HYPHEN}', '')
     text = unicodedata.normalize("NFC", text)
     return text
@@ -59,30 +68,30 @@ def prep_text(text):
 
 def analyze_text(text, multi_no):
     anrede = get_anrede(text)
-    ad = get_ad(text)
+    ad = get_ad(text)           # Erkennung des Kürzels für "außer Dienst" aufgrund unterschiedlicher Schreibweise
     funktion = get_funktion(text=text, anrede=anrede, ad=ad)
     name = get_name(text, ad=ad)
     taetigkeit, multi = get_taetigkeit(text, multi_no)
-    date_sitzung = get_date_sitzung(text)
+    date_sitzung, empfehlung = get_date_sitzung(text)
     date_bekannt = get_date_bekannt(text, anrede)
-    folgend = get_folgend(text)
-    beschluss = get_beschluss(text, multi)
+    folgend = get_folgend(text, empfehlung)
+    beschluss = get_beschluss(text, multi, empfehlung)
     result_list = [anrede, funktion, name, taetigkeit, date_sitzung, date_bekannt, folgend, beschluss]
     if None in result_list:
         a = 1
     return result_list, multi
 
-
+# closing cookies window that opened after initializing the scraper and landing on the BA website
 close_cookies(scrape=BA_scrape.driver)
-search_field = BA_scrape.driver.find_element(By.ID, "id3")
-search_field.clear()  # löschen von eventuellen Eingaben
-search(field=search_field, searched='Bundesministergesetz')
+search_field = BA_scrape.driver.find_element(By.ID, "id3")      # finding search field
+search_field.clear()                                            # löschen von eventuellen Eingaben
+search(field=search_field, searched='Bundesministergesetz')     # Ausführen der Suche
 time.sleep(1)
 
 daten = []
 change = True
 while change:
-    page_results = get_results(scraper=BA_scrape.driver)
+    page_results = get_results(scraper=BA_scrape.driver)        # alle Ergebnisse der aktuellen Seite
     for result_num in range(len(page_results)):
         open_result(scraper=BA_scrape.driver)
         result_header = BA_scrape.driver.find_element(By.XPATH,
@@ -91,16 +100,16 @@ while change:
         headerSoup = BeautifulSoup(headerHTML, 'html.parser')
         header_text = headerSoup.get_text()
         header_text = prep_text(header_text)
-        id_ = re.search('BAnz (.+?)  ', header_text).groups()[0]
-
+        id_ = re_search(pattern=r'BAnz (.+?)  ', text=header_text)
+        print(id_)      # print id to track errors more easily
         result_elem = BA_scrape.driver.find_element(By.XPATH,
                                                     "//div/section/div/div/div/div/div[@class='publication_container']")
         resultHTML = result_elem.get_attribute('outerHTML')  # gives exact HTML content of the element
         resultSoup = BeautifulSoup(resultHTML, 'html.parser')
-        result_text = resultSoup.get_text()
-        result_text = prep_text(text=result_text)
+        raw_result_text = resultSoup.get_text()
+        result_text = prep_text(text=raw_result_text)
         multi_no = 1
-        result_daten, multi = analyze_text(result_text, str(multi_no).encode('unicode-escape').decode())
+        result_daten, multi = analyze_text(result_text, str(multi_no))
         result_daten.append(id_)
         daten.append(result_daten)
         if multi != 1:
