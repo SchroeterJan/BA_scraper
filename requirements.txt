@@ -1,3 +1,450 @@
-selenium
-beautifulsoup4
-pandas
+[
+  {
+    "id": 14051173630219,
+    "admin_graphql_api_id": "gid:\/\/shopify\/LineItem\/14051173630219",
+    "fulfillable_quantity": 0,
+    "fulfillment_service": "atrikom-lager",
+    "fulfillment_status": "fulfilled",
+    "gift_card": false,
+    "grams": 0,
+    "name": "Hipster Panties | Schwarz - L \/ 3 Stück",
+    "price": "12.50",
+    "price_set": {
+      "shop_money": {
+        "amount": "12.50",
+        "currency_code": "EUR"
+      },
+      "presentment_money": {
+        "amount": "12.50",
+        "currency_code": "EUR"
+      }
+    },
+    "product_exists": true,
+    "product_id": 6158716797125,
+    "properties": [],
+    "quantity": 1,
+    "requires_shipping": true,
+    "sku": "TE-9JDO-MG3Y",
+    "taxable": true,
+    "title": "Hipster Panties | Schwarz",
+    "total_discount": "0.00",
+    "total_discount_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "EUR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "EUR"
+      }
+    },
+    "variant_id": 37896854929605,
+    "variant_inventory_management": "shopify",
+    "variant_title": "L \/ 3 Stück",
+    "vendor": "Snocks",
+    "tax_lines": [
+      {
+        "channel_liable": false,
+        "price": "2.00",
+        "price_set": {
+          "shop_money": {
+            "amount": "2.00",
+            "currency_code": "EUR"
+          },
+          "presentment_money": {
+            "amount": "2.00",
+            "currency_code": "EUR"
+          }
+        },
+        "rate": 0.19,
+        "title": "DE MwSt"
+      }
+    ],
+    "duties": [],
+    "discount_allocations": []
+  },
+  {
+    "id": 14051173662987,
+    "admin_graphql_api_id": "gid:\/\/shopify\/LineItem\/14051173662987",
+    "fulfillable_quantity": 0,
+    "fulfillment_service": "atrikom-lager",
+    "fulfillment_status": "fulfilled",
+    "gift_card": false,
+    "grams": 0,
+    "name": "Hipster Panties mit Spitze | Schwarz - L \/ 3 Stück",
+    "price": "26.99",
+    "price_set": {
+      "shop_money": {
+        "amount": "26.99",
+        "currency_code": "EUR"
+      },
+      "presentment_money": {
+        "amount": "26.99",
+        "currency_code": "EUR"
+      }
+    },
+    "product_exists": true,
+    "product_id": 6860585533637,
+    "properties": [],
+    "quantity": 1,
+    "requires_shipping": true,
+    "sku": "DT-GJUL-YMJ1",
+    "taxable": true,
+    "title": "Hipster Panties mit Spitze | Schwarz",
+    "total_discount": "0.00",
+    "total_discount_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "EUR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "EUR"
+      }
+    },
+    "variant_id": 40464985096389,
+    "variant_inventory_management": "shopify",
+    "variant_title": "L \/ 3 Stück",
+    "vendor": "Snocks",
+    "tax_lines": [
+      {
+        "channel_liable": false,
+        "price": "4.31",
+        "price_set": {
+          "shop_money": {
+            "amount": "4.31",
+            "currency_code": "EUR"
+          },
+          "presentment_money": {
+            "amount": "4.31",
+            "currency_code": "EUR"
+          }
+        },
+        "rate": 0.19,
+        "title": "DE MwSt"
+      }
+    ],
+    "duties": [],
+    "discount_allocations": []
+  },
+  {
+    "id": 14051173695755,
+    "admin_graphql_api_id": "gid:\/\/shopify\/LineItem\/14051173695755",
+    "fulfillable_quantity": 0,
+    "fulfillment_service": "atrikom-lager",
+    "fulfillment_status": "fulfilled",
+    "gift_card": false,
+    "grams": 230,
+    "name": "Mittelhohe Laufsocken | Schwarz - 39 - 42 \/ 4 Paar",
+    "price": "12.50",
+    "price_set": {
+      "shop_money": {
+        "amount": "12.50",
+        "currency_code": "EUR"
+      },
+      "presentment_money": {
+        "amount": "12.50",
+        "currency_code": "EUR"
+      }
+    },
+    "product_exists": true,
+    "product_id": 6096259612869,
+    "properties": [],
+    "quantity": 1,
+    "requires_shipping": true,
+    "sku": "MidRun_Schwarz_39",
+    "taxable": true,
+    "title": "Mittelhohe Laufsocken | Schwarz",
+    "total_discount": "0.00",
+    "total_discount_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "EUR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "EUR"
+      }
+    },
+    "variant_id": 37604772511941,
+    "variant_inventory_management": "shopify",
+    "variant_title": "39 - 42 \/ 4 Paar",
+    "vendor": "Snocks",
+    "tax_lines": [
+      {
+        "channel_liable": false,
+        "price": "2.00",
+        "price_set": {
+          "shop_money": {
+            "amount": "2.00",
+            "currency_code": "EUR"
+          },
+          "presentment_money": {
+            "amount": "2.00",
+            "currency_code": "EUR"
+          }
+        },
+        "rate": 0.19,
+        "title": "DE MwSt"
+      }
+    ],
+    "duties": [],
+    "discount_allocations": []
+  },
+  {
+    "id": 14051173728523,
+    "admin_graphql_api_id": "gid:\/\/shopify\/LineItem\/14051173728523",
+    "fulfillable_quantity": 0,
+    "fulfillment_service": "atrikom-lager",
+    "fulfillment_status": "fulfilled",
+    "gift_card": false,
+    "grams": 0,
+    "name": "Soft BH | Hellgrau - L \/ 1 Stück",
+    "price": "12.50",
+    "price_set": {
+      "shop_money": {
+        "amount": "12.50",
+        "currency_code": "EUR"
+      },
+      "presentment_money": {
+        "amount": "12.50",
+        "currency_code": "EUR"
+      }
+    },
+    "product_exists": true,
+    "product_id": 8272302244107,
+    "properties": [],
+    "quantity": 1,
+    "requires_shipping": true,
+    "sku": "C1-2E27-3IWZ",
+    "taxable": true,
+    "title": "Soft BH | Hellgrau",
+    "total_discount": "0.00",
+    "total_discount_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "EUR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "EUR"
+      }
+    },
+    "variant_id": 44433155424523,
+    "variant_inventory_management": "shopify",
+    "variant_title": "L \/ 1 Stück",
+    "vendor": "Snocks",
+    "tax_lines": [
+      {
+        "channel_liable": false,
+        "price": "2.00",
+        "price_set": {
+          "shop_money": {
+            "amount": "2.00",
+            "currency_code": "EUR"
+          },
+          "presentment_money": {
+            "amount": "2.00",
+            "currency_code": "EUR"
+          }
+        },
+        "rate": 0.19,
+        "title": "DE MwSt"
+      }
+    ],
+    "duties": [],
+    "discount_allocations": []
+  },
+  {
+    "id": 14051173761291,
+    "admin_graphql_api_id": "gid:\/\/shopify\/LineItem\/14051173761291",
+    "fulfillable_quantity": 0,
+    "fulfillment_service": "atrikom-lager",
+    "fulfillment_status": "fulfilled",
+    "gift_card": false,
+    "grams": 180,
+    "name": "Füßlinge | Mix (Schwarz\/Weiß\/Grau) - 43 - 46 \/ 6 Paar",
+    "price": "15.00",
+    "price_set": {
+      "shop_money": {
+        "amount": "15.00",
+        "currency_code": "EUR"
+      },
+      "presentment_money": {
+        "amount": "15.00",
+        "currency_code": "EUR"
+      }
+    },
+    "product_exists": true,
+    "product_id": 8273643405579,
+    "properties": [],
+    "quantity": 1,
+    "requires_shipping": true,
+    "sku": "6C-L0YS-7YUQ",
+    "taxable": true,
+    "title": "Füßlinge | Mix (Schwarz\/Weiß\/Grau)",
+    "total_discount": "0.00",
+    "total_discount_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "EUR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "EUR"
+      }
+    },
+    "variant_id": 44436952776971,
+    "variant_inventory_management": "shopify",
+    "variant_title": "43 - 46 \/ 6 Paar",
+    "vendor": "Snocks",
+    "tax_lines": [
+      {
+        "channel_liable": false,
+        "price": "2.39",
+        "price_set": {
+          "shop_money": {
+            "amount": "2.39",
+            "currency_code": "EUR"
+          },
+          "presentment_money": {
+            "amount": "2.39",
+            "currency_code": "EUR"
+          }
+        },
+        "rate": 0.19,
+        "title": "DE MwSt"
+      }
+    ],
+    "duties": [],
+    "discount_allocations": []
+  },
+  {
+    "id": 14051173794059,
+    "admin_graphql_api_id": "gid:\/\/shopify\/LineItem\/14051173794059",
+    "fulfillable_quantity": 0,
+    "fulfillment_service": "atrikom-lager",
+    "fulfillment_status": "fulfilled",
+    "gift_card": false,
+    "grams": 0,
+    "name": "Hipster Panties | Schwarz - XL \/ 3 Stück",
+    "price": "12.50",
+    "price_set": {
+      "shop_money": {
+        "amount": "12.50",
+        "currency_code": "EUR"
+      },
+      "presentment_money": {
+        "amount": "12.50",
+        "currency_code": "EUR"
+      }
+    },
+    "product_exists": true,
+    "product_id": 6158716797125,
+    "properties": [],
+    "quantity": 1,
+    "requires_shipping": true,
+    "sku": "1W-CWYR-6P7Z",
+    "taxable": true,
+    "title": "Hipster Panties | Schwarz",
+    "total_discount": "0.00",
+    "total_discount_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "EUR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "EUR"
+      }
+    },
+    "variant_id": 37896854962373,
+    "variant_inventory_management": "shopify",
+    "variant_title": "XL \/ 3 Stück",
+    "vendor": "Snocks",
+    "tax_lines": [
+      {
+        "channel_liable": false,
+        "price": "2.00",
+        "price_set": {
+          "shop_money": {
+            "amount": "2.00",
+            "currency_code": "EUR"
+          },
+          "presentment_money": {
+            "amount": "2.00",
+            "currency_code": "EUR"
+          }
+        },
+        "rate": 0.19,
+        "title": "DE MwSt"
+      }
+    ],
+    "duties": [],
+    "discount_allocations": []
+  },
+  {
+    "id": 14051173826827,
+    "admin_graphql_api_id": "gid:\/\/shopify\/LineItem\/14051173826827",
+    "fulfillable_quantity": 0,
+    "fulfillment_service": "atrikom-lager",
+    "fulfillment_status": "fulfilled",
+    "gift_card": false,
+    "grams": 0,
+    "name": "Hipster Panties mit Spitze | Schwarz - XL \/ 3 Stück",
+    "price": "26.99",
+    "price_set": {
+      "shop_money": {
+        "amount": "26.99",
+        "currency_code": "EUR"
+      },
+      "presentment_money": {
+        "amount": "26.99",
+        "currency_code": "EUR"
+      }
+    },
+    "product_exists": true,
+    "product_id": 6860585533637,
+    "properties": [],
+    "quantity": 1,
+    "requires_shipping": true,
+    "sku": "SK-UT8M-RT1Q",
+    "taxable": true,
+    "title": "Hipster Panties mit Spitze | Schwarz",
+    "total_discount": "0.00",
+    "total_discount_set": {
+      "shop_money": {
+        "amount": "0.00",
+        "currency_code": "EUR"
+      },
+      "presentment_money": {
+        "amount": "0.00",
+        "currency_code": "EUR"
+      }
+    },
+    "variant_id": 40464985129157,
+    "variant_inventory_management": "shopify",
+    "variant_title": "XL \/ 3 Stück",
+    "vendor": "Snocks",
+    "tax_lines": [
+      {
+        "channel_liable": false,
+        "price": "4.31",
+        "price_set": {
+          "shop_money": {
+            "amount": "4.31",
+            "currency_code": "EUR"
+          },
+          "presentment_money": {
+            "amount": "4.31",
+            "currency_code": "EUR"
+          }
+        },
+        "rate": 0.19,
+        "title": "DE MwSt"
+      }
+    ],
+    "duties": [],
+    "discount_allocations": []
+  }
+]

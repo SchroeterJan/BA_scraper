@@ -18,15 +18,13 @@ def get_path():
         save_path = os.path.join(os.getcwd(), "AW_scraper","files")
     return save_path
 
-
-def get_candidacies_mandates(save_path):
-    print(f"candidacies mandates start: {datetime.datetime.now()}")
+def load_data(link, range_ = 50):
     x = 0
     json_list = list()
     while x >= 0:
-        url_candidacies_mandates = f"https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates?range_start={x}&range_end={x+50}"
-        myResponse = requests.get(url_candidacies_mandates)
-#        print(x)
+        url_parliament_periods = link+f"?id[gte]={x}&id[lt]={x+range_}"
+        myResponse = requests.get(url_parliament_periods)
+        print(x)
         jData = json.loads(myResponse.content)
         if x == 0: 
 #            print(jData)
@@ -40,6 +38,13 @@ def get_candidacies_mandates(save_path):
                 x += 50
                 json_list.append(jData)
     print(f"loaded {50*z} lines")
+    return json_list()
+
+
+def get_candidacies_mandates(save_path):
+    print(f"candidacies mandates start: {datetime.datetime.now()}")
+    url_candidacies_mandates = f"https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates"
+    json_list = load_data(url_candidacies_mandates)
     df_list = list()
     for i in json_list:
         candidacies_mandates_df = pd.DataFrame()
@@ -80,25 +85,8 @@ def get_candidacies_mandates(save_path):
 
 def get_parliament_periods(save_path):
     print(f"parliament periods start: {datetime.datetime.now()}")
-    x = 0
-    json_list = list()
-    while x >= 0:
-        url_parliament_periods = f"https://www.abgeordnetenwatch.de/api/v2/parliament-periods?range_start={x}&range_end={x+50}"#?id[gte]={x}&id[lt]={x+50}"
-        myResponse = requests.get(url_parliament_periods)
-#        print(x)
-        jData = json.loads(myResponse.content)
-        if x == 0: 
-#            print(jData)
-            json_list.append(jData)
-            x += 50
-        else:
-            if not json_list[-1]["data"]:
-                z = x
-                x = -1
-            else:
-                x += 50
-                json_list.append(jData)
-    print(f"loaded {50*z} lines")
+    url_parliament_periods = f"https://www.abgeordnetenwatch.de/api/v2/parliament-periods"#?id[gte]={x}&id[lt]={x+50}"
+    json_list = load_data(url_parliament_periods)
     df_list = list()
     for i in json_list:
         parliaments_periods_df = pd.DataFrame()
@@ -141,24 +129,8 @@ def get_parliament_periods(save_path):
 
 def get_parliaments(save_path):
     print(f"parliaments start: {datetime.datetime.now()}")
-    x = 0
-    json_list = list()
-    while x >= 0:
-        url_parliaments = f"https://www.abgeordnetenwatch.de/api/v2/parliaments?range_start={x}&range_end={x+50}"
-        myResponse = requests.get(url_parliaments)
-        jData = json.loads(myResponse.content)
-        if x == 0: 
-#            print(jData)
-            json_list.append(jData)
-            x += 50
-        else:
-            if not json_list[-1]["data"]:
-                z = x
-                x = -1
-            else:
-                x += 50
-                json_list.append(jData)
-    print(f"loaded {50*z} lines")
+    url_parliaments = f"https://www.abgeordnetenwatch.de/api/v2/parliaments?range_start={x}&range_end={x+50}"
+    json_list = load_data(url_parliaments)
     df_list = list()
     df_list_projects = list()
     for i in json_list:
@@ -201,25 +173,8 @@ def get_parliaments(save_path):
 
 def get_politicians( save_path):
     print(f"politicians start: {datetime.datetime.now()}")
-
-    x = 0
-    json_list = list()
-    while x >= 0:
-        url_parliaments = f"https://www.abgeordnetenwatch.de/api/v2/politicians?range_start={x}&range_end={x+50}"
-        myResponse = requests.get(url_parliaments)
-        jData = json.loads(myResponse.content)
-        if x == 0: 
-#            print(jData)
-            json_list.append(jData)
-            x += 50
-        else:
-            if not json_list[-1]["data"]:
-                z = x
-                x = -1
-            else:
-                x += 50
-                json_list.append(jData)
-    print(f"loaded {50*z} lines")
+    url_politicians = f"https://www.abgeordnetenwatch.de/api/v2/politicians"
+    json_list = load_data(url_politicians)
     df_list = list()
     df_list_party = list()
     for i in json_list:
