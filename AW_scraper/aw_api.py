@@ -21,64 +21,107 @@ def get_path():
 def load_data(link, range_ = 50):
     x = 0
     json_list = list()
-    while x >= 0:
-        url_parliament_periods = link+f"?id[gte]={x}&id[lt]={x+range_}"
+    if range_ == None:
+        url_parliament_periods = link
         myResponse = requests.get(url_parliament_periods)
         print(x)
         jData = json.loads(myResponse.content)
         if x == 0: 
 #            print(jData)
             json_list.append(jData)
-            x += 50
-        else:
-            if not json_list[-1]["data"]:
-                z = x
-                x = -1                
-            else:
-                x += 50
+
+
+    else:
+        while x >= 0:
+            url_parliament_periods = link+f"?page={x}&pager_limit=1000"
+
+            myResponse = requests.get(url_parliament_periods)
+            print(x)
+            jData = json.loads(myResponse.content)
+            if x == 0: 
+    #            print(jData)
                 json_list.append(jData)
-    print(f"loaded {50*z} lines")
-    return json_list()
+                x += 1
+            else:
+                if not json_list[-1]["data"]:
+                    z = x
+                    x = -1                
+                else:
+                    x += 1
+                    json_list.append(jData)
+            if x>10:
+                x=-1
+        print(f"loaded {z} lines")
+
+
+
+    return json_list
+
+
+
 
 
 def get_candidacies_mandates(save_path):
     print(f"candidacies mandates start: {datetime.datetime.now()}")
     url_candidacies_mandates = f"https://www.abgeordnetenwatch.de/api/v2/candidacies-mandates"
     json_list = load_data(url_candidacies_mandates)
-    df_list = list()
+
+    rows = list()
+    max_len_fractions=1
+
     for i in json_list:
         candidacies_mandates_df = pd.DataFrame()
         counter = 0
         for key, value in i.items():
             if key == "data":
                 for element in value:
-                        if counter == 0:
-                            try:
-                                if element['parliament_period']['label'] != None:
-                                    parliament_row = pd.DataFrame(element['parliament'], index=[counter])
-                                    parliament_df = pd.concat([parliament_df, parliament_row], ignore_index=True)
-                                    element = element | {'party': element['parliament']['label'] }
-                                if element["politician"] != None:
-                                    element = element | {'politician': element['politician']['label'] }
-                            except:
-                                pass
-                            candidacies_mandates_df = pd.DataFrame(element, index = [counter])
+                    current_element=element.copy()
+                    if counter == 0:
+                        print(element)
+                        first_element = element.copy()
+
+                    if 'fraction_membership' in current_element:
+                        fraction_list = [current_element['fraction_membership'][u]['label'] for u,v, in enumerate(current_element['fraction_membership']) ]
+                        if len(fraction_list) > max_len_fractions:
+                            max_len_fractions = len(fraction_list)
+                        fraction_list = fraction_list + [None for z in range(max_len_fractions-len(fraction_list))]
+                        fraction_dict = {"fraction_membership"+str(l+1):v for l,v in enumerate(fraction_list)}
+                        current_element.pop('fraction_membership')
+                    else:
+                        fraction_dict = {"fraction_membership"+str(u+1):None for u in range(max_len_fractions)}
+
+                    if current_element['parliament_period']['label'] != None:
+                        parliamend_period_dict = {"parliament_period": current_element['parliament_period']["label"]}
+                    else:
+                        parliamend_period_dict = {"parliamend_period": None}
+                    current_element.pop('parliament_period')
+
+                    if current_element['electoral_data'] != None:
+                        if current_element['electoral_data']['electoral_list'] != None:
+                            electoral_list_dict = {'electoral_list':current_element['electoral_data']['electoral_list']['label']}
                         else:
-                            try:
-                                if element['parliament']['label'] != None:
-                                    parliament_row = pd.DataFrame(element['parliament'], index=[counter])
-                                    parliament_df = pd.concat([parliament_df, parliament_row], ignore_index=True)
-                                    element = element | {'party': element['parliament']['label'] }
-                                if element["politician"] != None:
-                                    element = element | {'politician': element['politician']['label'] }
-                            except:
-                                pass
-                            row = pd.DataFrame(element, index = [counter])
-                            candidacies_mandates_df = pd.concat([candidacies_mandates_df, row], ignore_index=True)
-                        counter += 1
-        df_list.append(candidacies_mandates_df)
-    final_df = pd.concat(df_list)
-    final_df.to_excel(os.path.join(save_path,"candidacies_mandate.xlsx"))
+                            electoral_list_dict = {'electoral_list':None}
+                        if current_element['electoral_data']['constituency'] != None:
+                            constituency_dict = {'constituency':current_element['electoral_data']['constituency']['label']}
+                        else:
+                            constituency_dict = {'constituency':None}
+                    current_element.pop('electoral_data')
+
+                    if current_element["politician"] != None:
+                        # current_element = current_element | {'politician': current_element['politician']['label'] }
+                        politician_dict =  {'politician': current_element['politician']['label'] }
+                    else:
+                        politician_dict =  {'politician': None}
+                    current_element.pop('politician')
+
+                    rows.append(current_element | fraction_dict | politician_dict | electoral_list_dict | constituency_dict | parliamend_period_dict | fraction_dict)
+
+                    counter += 1
+
+    save_path = "files"
+    print(f"max_len_fractions: {max_len_fractions}")
+    candidacies_mandates_df = pd.DataFrame(rows)
+    candidacies_mandates_df.to_excel(save_path+"\\candidacies_mandates.xlsx", index=False)
     print(f"candidacies mandates end: {datetime.datetime.now()} \n")
 
 
@@ -122,14 +165,14 @@ def get_parliament_periods(save_path):
                         counter += 1
         df_list.append(parliaments_periods_df)
     final_df = pd.concat(df_list)
-    final_df.to_excel(os.path.join(save_path,"parliament_period.xlsx"))
+    final_df.to_excel(os.path.join(save_path,"parliament_period.xlsx"), index=False)
     print(f"parliament periods end: {datetime.datetime.now()}\n")
 
 
 
 def get_parliaments(save_path):
     print(f"parliaments start: {datetime.datetime.now()}")
-    url_parliaments = f"https://www.abgeordnetenwatch.de/api/v2/parliaments?range_start={x}&range_end={x+50}"
+    url_parliaments = f"https://www.abgeordnetenwatch.de/api/v2/parliaments"#?range_start={x}&range_end={x+50}"
     json_list = load_data(url_parliaments)
     df_list = list()
     df_list_projects = list()
@@ -165,9 +208,9 @@ def get_parliaments(save_path):
         df_list_projects.append(project_df)
 
     final_df_parliament = pd.concat(df_list)
-    final_df_parliament.to_excel(os.path.join(save_path,"parliaments.xlsx"))
+    final_df_parliament.to_excel(os.path.join(save_path,"parliaments.xlsx"), index=False)
     final_project_df = pd.concat(df_list_projects)
-    final_project_df.to_excel(os.path.join(save_path,"project.xlsx"))
+    final_project_df.to_excel(os.path.join(save_path,"project.xlsx"), index=False)
     print(f"parliament end: {datetime.datetime.now()}\n")
 
 
@@ -216,14 +259,14 @@ def get_politicians( save_path):
         df_list_party.append(party_df)
 
     final_df_party = pd.concat(df_list)
-    final_df_party.to_excel(os.path.join(save_path,"politicians.xlsx"))
+    final_df_party.to_excel(os.path.join(save_path,"politicians.xlsx"), index=False)
     final_party_df = pd.concat(df_list_party)
-    final_party_df.to_excel(os.path.join(save_path,"party.xlsx"))
+    final_party_df.to_excel(os.path.join(save_path,"party.xlsx"), index=False)
     print(f"politicians end: {datetime.datetime.now()} \n")
 
 
 save_path = get_path()
-get_politicians(save_path)
-get_parliament_periods(save_path)
-# get_candidacies_mandates(save_path)
-get_parliaments(save_path)
+#get_politicians(save_path)
+#get_parliament_periods(save_path)
+get_candidacies_mandates(save_path)
+#get_parliaments(save_path)
